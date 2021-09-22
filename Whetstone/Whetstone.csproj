@@ -4,4 +4,50 @@
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Eco.ReferenceAssemblies" Version="0.9.4-beta-testgame-modkit-nuget-0ed386fd" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="Eco.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ModKit\ReferenceAssemblies\Eco.Core.dll</HintPath>
+      </Reference>
+      <Reference Include="Eco.Gameplay, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ModKit\ReferenceAssemblies\Eco.Gameplay.dll</HintPath>
+      </Reference>
+      <Reference Include="Eco.ModKit, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ModKit\ReferenceAssemblies\Eco.ModKit.dll</HintPath>
+      </Reference>
+      <Reference Include="Eco.Mods, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ModKit\ReferenceAssemblies\Eco.Mods.dll</HintPath>
+      </Reference>
+      <Reference Include="Eco.Networking.ENet, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ModKit\ReferenceAssemblies\Eco.Networking.ENet.dll</HintPath>
+      </Reference>
+      <Reference Include="Eco.Plugins, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ModKit\ReferenceAssemblies\Eco.Plugins.dll</HintPath>
+      </Reference>
+      <Reference Include="Eco.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ModKit\ReferenceAssemblies\Eco.Shared.dll</HintPath>
+      </Reference>
+      <Reference Include="Eco.Simulation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ModKit\ReferenceAssemblies\Eco.Simulation.dll</HintPath>
+      </Reference>
+      <Reference Include="Eco.Stats, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ModKit\ReferenceAssemblies\Eco.Stats.dll</HintPath>
+      </Reference>
+      <Reference Include="Eco.WebServer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ModKit\ReferenceAssemblies\Eco.WebServer.dll</HintPath>
+      </Reference>
+      <Reference Include="Eco.World, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ModKit\ReferenceAssemblies\Eco.World.dll</HintPath>
+      </Reference>
+      <Reference Include="Eco.WorldGenerator, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ModKit\ReferenceAssemblies\Eco.WorldGenerator.dll</HintPath>
+      </Reference>
+      <Reference Include="EcoServer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\ModKit\ReferenceAssemblies\EcoServer.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
 </Project>

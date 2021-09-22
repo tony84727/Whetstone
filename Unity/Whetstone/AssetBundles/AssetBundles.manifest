@@ -1,0 +1,7 @@
+ManifestFileVersion: 0
+CRC: 2294111982
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: whetstone
+      Dependencies: {}

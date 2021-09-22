@@ -3,7 +3,17 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Atmosphere
+  - Meteor
+  - ModItem
+  - ModObject
+  - ModBlock
+  - Block
+  - WorldObject
+  - Item
+  - ModBenefit
+  - FirstPersonCamera
   layers:
   - Default
   - TransparentFX
@@ -13,30 +23,30 @@ TagManager:
   - UI
   - 
   - 
+  - PostProcess
+  - Terrain
+  - IgnorePlayer
+  - Player
+  - PlayerFeet
+  - Minimap
+  - Atmosphere
+  - IgnoreSelfCollision
+  - Avatar
+  - Fade
+  - TerrainColliders
+  - Animals
+  - Foliage
+  - OnlyGI
+  - IgnoreInteraction
+  - DecorationSpawnQuery
+  - MovingPlatform
+  - MovingPlatformSimulation
+  - FirstPersonView
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - BlockSelection
+  - TitleScreenTerrain
+  - TitleScreen
+  - ShadowPlacement
   m_SortingLayers:
   - name: Default
     uniqueID: 0
