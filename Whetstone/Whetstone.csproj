@@ -5,10 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Eco.ReferenceAssemblies" Version="0.9.4-beta-testgame-modkit-nuget-0ed386fd" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Reference Include="Eco.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\ModKit\ReferenceAssemblies\Eco.Core.dll</HintPath>
       </Reference>
