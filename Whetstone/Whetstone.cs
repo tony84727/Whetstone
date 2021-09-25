@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using Eco.Gameplay.Components;
 using Eco.Gameplay.Items;
 using Eco.Gameplay.Players;
@@ -34,6 +33,7 @@ namespace Whetstone
 
     public class Whetstone : Item
     {
+        public const float CraftTime = 0.5f;
         protected virtual Tag RepairTag => null;
         protected virtual Type RepairItem => null;
 
@@ -52,13 +52,14 @@ namespace Whetstone
                 player.Error(Localizer.DoStr($"{selectedItem.DisplayName} is all good"));
                 return;
             }
+
             itemStack.TryModifyStack(player.User, -1, null, () =>
             {
                 tool.Durability = 100;
                 player.InfoBox(Localizer.DoStr($"{selectedItem.DisplayName} repaired to full durability!"));
             });
         }
-        
+
         private bool CanRepair(ToolItem tool)
         {
             return CanRepairByItem(tool) || CanRepairByTag(tool);
@@ -82,7 +83,7 @@ namespace Whetstone
 
     [Serialized]
     [LocDisplayName("Wood Whetstone")]
-    [Weight(800)]
+    [Weight(500)]
     [MaxStackSize(50)]
     public class WoodWhetstoneItem : Whetstone
     {
@@ -92,7 +93,7 @@ namespace Whetstone
 
     [Serialized]
     [LocDisplayName("Stone Whetstone")]
-    [Weight(1000)]
+    [Weight(500)]
     [MaxStackSize(50)]
     public class StoneWhetstoneItem : Whetstone
     {
@@ -102,7 +103,7 @@ namespace Whetstone
 
     [Serialized]
     [LocDisplayName("Iron Whetstone")]
-    [Weight(1000)]
+    [Weight(500)]
     [MaxStackSize(50)]
     public class IronWhetstoneItem : Whetstone
     {
@@ -113,12 +114,50 @@ namespace Whetstone
 
     [Serialized]
     [LocDisplayName("Steel Whetstone")]
-    [Weight(1000)]
+    [Weight(500)]
     [MaxStackSize(50)]
     public class SteelWhetstoneItem : Whetstone
     {
         protected override Type RepairItem => typeof(SteelBarItem);
         public override LocString DisplayDescription => Localizer.DoStr("Consume to repair modern/steel tools");
+    }
+
+    [RequiresSkill(typeof(BasicEngineeringSkill), 0)]
+    public class WoodWhetstoneRecipe : RecipeFamily
+    {
+        public static int InferRepairCostBase(DurabilityItem item)
+        {
+            return (int) Math.Ceiling(item.FullRepairAmount * 0.2);
+        }
+        public WoodWhetstoneRecipe()
+        {
+            var recipe = new Recipe();
+            recipe.Init(
+                "Wood Whetstone",
+                Localizer.DoStr("Wood Whetstone"),
+                new List<IngredientElement>
+                {
+                    new("Wood", 
+                        InferRepairCostBase(new WoodenShovelItem()),
+                        typeof(BasicEngineeringSkill),
+                        typeof(BasicEngineeringLavishResourcesTalent)),
+                },
+                new List<CraftingElement>
+                {
+                    new CraftingElement<WoodWhetstoneItem>(),
+                });
+            Recipes = new List<Recipe> {recipe};
+            ExperienceOnCraft = 1;
+            LaborInCalories = CreateLaborInCaloriesValue(100);
+            CraftMinutes = CreateCraftTimeValue(
+            typeof(WoodWhetstoneItem), 
+            Whetstone.CraftTime,
+            typeof(BasicEngineeringSkill),
+            typeof(BasicEngineeringFocusedSpeedTalent),
+            typeof(BasicEngineeringParallelSpeedTalent));
+            Initialize(Localizer.DoStr("Wood Whetstone"), typeof(WoodWhetstoneRecipe));
+            CraftingComponent.AddRecipe(typeof(ToolBenchObject), this);
+        }
     }
 
     [RequiresSkill(typeof(BasicEngineeringSkill), 0)]
@@ -132,18 +171,94 @@ namespace Whetstone
                 Localizer.DoStr("Stone Whetstone"),
                 new List<IngredientElement>
                 {
-                    new("Rock", 1, true),
+                    new("Rock", 
+                        WoodWhetstoneRecipe.InferRepairCostBase(new StonePickaxeItem()),
+                        typeof(BasicEngineeringSkill),
+                        typeof(BasicEngineeringLavishResourcesTalent)),
                 },
                 new List<CraftingElement>
                 {
                     new CraftingElement<StoneWhetstoneItem>()
                 });
             Recipes = new List<Recipe> {recipe};
-            ExperienceOnCraft = 5;
-            LaborInCalories = CreateLaborInCaloriesValue(100, typeof(BasicEngineeringSkill));
-            CraftMinutes = CreateCraftTimeValue(typeof(StoneWhetstoneRecipe), 1, typeof(BasicEngineeringSkill));
+            ExperienceOnCraft = 1;
+            LaborInCalories = CreateLaborInCaloriesValue(100);
+            CraftMinutes = CreateCraftTimeValue(
+                typeof(StoneWhetstoneRecipe), 
+                Whetstone.CraftTime,
+                typeof(BasicEngineeringSkill), 
+                typeof(BasicEngineeringFocusedSpeedTalent), 
+                typeof(BasicEngineeringParallelSpeedTalent));
             Initialize(Localizer.DoStr("Stone Whetstone"), typeof(StoneWhetstoneRecipe));
-            CraftingComponent.AddRecipe(typeof(WorkbenchObject), this);
+            CraftingComponent.AddRecipe(typeof(ToolBenchObject), this);
+        }
+    }
+
+    [RequiresSkill(typeof(SmeltingSkill), 1)]
+    public class IronWhetstoneRecipe : RecipeFamily
+    {
+        public IronWhetstoneRecipe()
+        {
+            var recipe = new Recipe();
+            recipe.Init(
+                "Iron Whetstone",
+                Localizer.DoStr("Iron Whetstone"),
+                new List<IngredientElement>
+                {
+                    new(typeof(IronBarItem),
+                        WoodWhetstoneRecipe.InferRepairCostBase(new IronPickaxeItem()),
+                        typeof(SmeltingSkill),
+                        typeof(SmeltingLavishResourcesTalent)),
+                },
+                new List<CraftingElement>
+                {
+                    new CraftingElement<IronWhetstoneItem>()
+                });
+            Recipes = new List<Recipe> {recipe};
+            ExperienceOnCraft = 1;
+            LaborInCalories = CreateLaborInCaloriesValue(100, typeof(SmeltingSkill));
+            CraftMinutes = CreateCraftTimeValue(
+                typeof(IronWhetstoneItem),
+                Whetstone.CraftTime,
+                typeof(SmeltingSkill),
+                typeof(SmeltingFocusedSpeedTalent),
+                typeof(SmeltingParallelSpeedTalent));
+            Initialize(Localizer.DoStr("Iron Whetstone"), typeof(IronWhetstoneRecipe));
+            CraftingComponent.AddRecipe(typeof(AnvilObject), this);
+        }
+    }
+
+    [RequiresSkill(typeof(AdvancedSmeltingSkill), 1)]
+    public class SteelWhetstoneRecipe : RecipeFamily
+    {
+        public SteelWhetstoneRecipe()
+        {
+            var recipe = new Recipe();
+            recipe.Init(
+                "Steel Whetstone",
+                Localizer.DoStr("Steel Whetstone"),
+                new List<IngredientElement>
+                {
+                    new(typeof(SteelBarItem), 
+                        WoodWhetstoneRecipe.InferRepairCostBase(new ModernPickaxeItem()),
+                        typeof(AdvancedSmeltingSkill),
+                        typeof(AdvancedSmeltingLavishResourcesTalent)),
+                },
+                new List<CraftingElement>
+                {
+                    new CraftingElement<SteelWhetstoneItem>()
+                });
+            Recipes = new List<Recipe> {recipe};
+            ExperienceOnCraft = 1;
+            LaborInCalories = CreateLaborInCaloriesValue(200, typeof(AdvancedSmeltingSkill));
+            CraftMinutes = CreateCraftTimeValue(
+                typeof(SteelWhetstoneItem),
+                Whetstone.CraftTime,
+                typeof(AdvancedSmeltingSkill),
+                typeof(AdvancedSmeltingFocusedSpeedTalent),
+                typeof(AdvancedSmeltingParallelSpeedTalent));
+            Initialize(Localizer.DoStr("Steel Whetstone"), typeof(SteelWhetstoneRecipe));
+            CraftingComponent.AddRecipe(typeof(AnvilObject), this);
         }
     }
 }
