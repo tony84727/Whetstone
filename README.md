@@ -2,6 +2,8 @@
 
 A mod for [Eco](https://play.eco/)
 
+Allow players to quickly fix their tools in the wild.
+
 This mod adds the following items:
 
 * Wood Whetstone: Consume to fix wooden tools, such as Wooden Shovel
@@ -11,5 +13,5 @@ This mod adds the following items:
 * Tool Breaker: Hidden item, break the tool immediately.
 
 # Credits
-
+[@StrangeLoopGames](https://github.com/StrangeLoopGames) for making this game and providing modding support and Modkit.  
 [@Tiptoee](https://github.com/Tiptoee) for bringing up the ideas.
