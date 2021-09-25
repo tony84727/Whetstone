@@ -41,6 +41,11 @@ namespace Whetstone
         {
             base.OnUsed(player, itemStack);
             var selectedItem = player.User.Inventory.Toolbar.SelectedItem;
+            if (selectedItem == null)
+            {
+                player.Error(Localizer.DoStr($"Missing repair target. Please select a tool on the toolbar"));
+                return;
+            }
             if (selectedItem is not ToolItem tool || !CanRepair(tool))
             {
                 player.Error(Localizer.DoStr($"{DisplayName} cannot fix {selectedItem.DisplayName}!"));
@@ -67,12 +72,12 @@ namespace Whetstone
 
         private bool CanRepairByItem(ToolItem tool)
         {
-            return RepairItem != null && tool.RepairItem.GetType() == RepairItem;
+            return tool.RepairItem != null && tool.RepairItem.GetType() == RepairItem;
         }
 
         private bool CanRepairByTag(ToolItem tool)
         {
-            return RepairTag != null && tool.RepairTag == RepairTag;
+            return tool.RepairTag != null && tool.RepairTag == RepairTag;
         }
 
         private static bool NeedRepair(DurabilityItem item)
