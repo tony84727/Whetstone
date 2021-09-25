@@ -12,4 +12,4 @@ This mod adds the following items:
 
 # Credits
 
-@tiptoee for bringing up the ideas.
+[@Tiptoee](https://github.com/Tiptoee) for bringing up the ideas.
