@@ -41,16 +41,24 @@ namespace Whetstone
         {
             base.OnUsed(player, itemStack);
             var selectedItem = player.User.Inventory.Toolbar.SelectedItem;
-            if (selectedItem is not ToolItem tool)
+            if (selectedItem is not ToolItem tool || !CanRepair(tool))
             {
+                player.Error(Localizer.DoStr($"{DisplayName} cannot fix {selectedItem.DisplayName}!"));
                 return;
             }
-            
-            if (!CanRepair(tool))
-                return;
-            itemStack.TryModifyStack(player.User, -1, null, () => tool.Durability = 100);
-        }
 
+            if (!NeedRepair(tool))
+            {
+                player.Error(Localizer.DoStr($"{selectedItem.DisplayName} is all good"));
+                return;
+            }
+            itemStack.TryModifyStack(player.User, -1, null, () =>
+            {
+                tool.Durability = 100;
+                player.InfoBox(Localizer.DoStr($"{selectedItem.DisplayName} repaired to full durability!"));
+            });
+        }
+        
         private bool CanRepair(ToolItem tool)
         {
             return CanRepairByItem(tool) || CanRepairByTag(tool);
@@ -58,12 +66,17 @@ namespace Whetstone
 
         private bool CanRepairByItem(ToolItem tool)
         {
-            return RepairItem != null && tool.RepairItem.GetType() == RepairItem ;
+            return RepairItem != null && tool.RepairItem.GetType() == RepairItem;
         }
 
         private bool CanRepairByTag(ToolItem tool)
         {
             return RepairTag != null && tool.RepairTag == RepairTag;
+        }
+
+        private static bool NeedRepair(DurabilityItem item)
+        {
+            return item.Durability < 100;
         }
     }
 
