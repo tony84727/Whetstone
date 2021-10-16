@@ -31,7 +31,7 @@ namespace Whetstone
         }
     }
 
-    public class Whetstone : Item
+    public abstract class Whetstone : Item
     {
         public const float CraftTime = 0.5f;
         protected virtual Tag RepairTag => null;
@@ -90,6 +90,7 @@ namespace Whetstone
     [LocDisplayName("Wood Whetstone")]
     [Weight(500)]
     [MaxStackSize(50)]
+    [Currency]
     public class WoodWhetstoneItem : Whetstone
     {
         protected override Tag RepairTag => Tag.Wood;
@@ -100,6 +101,7 @@ namespace Whetstone
     [LocDisplayName("Stone Whetstone")]
     [Weight(500)]
     [MaxStackSize(50)]
+    [Currency]
     public class StoneWhetstoneItem : Whetstone
     {
         protected override Tag RepairTag => TagManager.Tag("Rock");
@@ -110,6 +112,7 @@ namespace Whetstone
     [LocDisplayName("Iron Whetstone")]
     [Weight(500)]
     [MaxStackSize(50)]
+    [Currency]
     public class IronWhetstoneItem : Whetstone
     {
         protected override Type RepairItem => typeof(IronBarItem);
@@ -121,6 +124,7 @@ namespace Whetstone
     [LocDisplayName("Steel Whetstone")]
     [Weight(500)]
     [MaxStackSize(50)]
+    [Currency]
     public class SteelWhetstoneItem : Whetstone
     {
         protected override Type RepairItem => typeof(SteelBarItem);
