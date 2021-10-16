@@ -938,6 +938,15 @@
         <member name="M:Eco.Shared.Networking.INetObjectManager.Remove(Eco.Shared.Networking.INetObject)">
             <summary>Removes <paramref name="netObject"/> from <see cref="T:Eco.Shared.Networking.INetObjectManager"/>.</summary>
         </member>
+        <member name="M:Eco.Shared.Networking.NetObject.SendEventNow(Eco.Shared.Networking.NetworkEvent,Eco.Shared.Serialization.BSONObject,Eco.Shared.Networking.INetClient)">
+            <summary>Sends event immediately if possible ignoring previously queued messages. As side effect it makes encoding in current thread instead of network thread.</summary>
+        </member>
+        <member name="M:Eco.Shared.Networking.INetworkEventHandler.SendEvent(Eco.Shared.Networking.NetworkEvent,Eco.Shared.Serialization.BSONObject,Eco.Shared.Networking.INetClient,Eco.Shared.Networking.INetObject)">
+            <summary>Sends network event to destination target with respect to order of previously queued events.</summary>
+        </member>
+        <member name="M:Eco.Shared.Networking.INetworkEventHandler.SendEventNow(Eco.Shared.Networking.NetworkEvent,Eco.Shared.Serialization.BSONObject,Eco.Shared.Networking.INetClient)">
+            <summary>Sends network event immediately if possible ignoring previously queued events. If not possible then fallback to <see cref="M:Eco.Shared.Networking.INetworkEventHandler.SendEvent(Eco.Shared.Networking.NetworkEvent,Eco.Shared.Serialization.BSONObject,Eco.Shared.Networking.INetClient,Eco.Shared.Networking.INetObject)"/> behavior. It also makes all encoding and serialization in current thread.</summary>
+        </member>
         <member name="M:Eco.Shared.Networking.NetObjectManager.CollectObjectStats">
             <summary> Collect stats about existing network objects in <see cref="T:Eco.Shared.Networking.NetObjectManager"/>. May be used for statistic and leaks detection. </summary>
         </member>
@@ -1055,6 +1064,9 @@
         </member>
         <member name="M:Eco.Shared.Networking.RPCInvocation.Dispose">
             <summary>Returns rented args array back to cache (for reusing arrays and reducing memory allocations).</summary>
+        </member>
+        <member name="M:Eco.Shared.Networking.RPCManager.CreateRPCPayload(Eco.Shared.Networking.INetClient,Eco.Shared.Networking.INetObject,System.String,System.Object[])">
+            <summary>Creates RPC payload to be used with <see cref="M:Eco.Shared.Networking.NetObject.SendEvent(Eco.Shared.Networking.NetworkEvent,Eco.Shared.Serialization.BSONObject,Eco.Shared.Networking.INetClient,Eco.Shared.Networking.INetObject)"/> with <see cref="F:Eco.Shared.Networking.NetworkEvent.RPC"/> event.</summary>
         </member>
         <member name="M:Eco.Shared.Networking.RPCManager.TryCreateInvocation``1(Eco.Shared.Networking.INetClient,System.Object,System.String,System.Collections.Generic.IList{``0},System.Func{``0,System.Type,System.Object},Eco.Shared.Networking.RPCInvocation@)">
             <summary>
@@ -2263,6 +2275,9 @@
         </member>
         <member name="M:Eco.Shared.Utils.EnumerableExtensions.Cast(System.Collections.IEnumerable,System.Type)">
             <summary>Casts <paramref name="enumerable"/> to <see cref="T:System.Collections.Generic.IEnumerable`1"/>. Is useful when you need to cast to specific runtime type, but can't use generic type arguments.</summary>
+        </member>
+        <member name="M:Eco.Shared.Utils.EnumerableExtensions.FallbackIfEmpty``1(System.Collections.Generic.IEnumerable{``0},System.Func{System.Collections.Generic.IEnumerable{``0}})">
+            <summary>Fallback to another enumerable provided by <paramref name="fallbackProvider"/> if <paramref name="enumerable"/> is empty.</summary>
         </member>
         <member name="M:Eco.Shared.Utils.ExceptionUtils.TryFindExceptionOfType``1(System.Exception,``0@)">
             <summary>Recursively tries to find exception of type <typeparamref name="T"/> for the <paramref name="exception"/>. It may be <paramref name="exception"/> itself or one of it's inner exceptions.</summary>
