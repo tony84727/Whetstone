@@ -1,4 +1,4 @@
-﻿#pragma warning disable CA1416
+#pragma warning disable CA1416
 
 using System;
 using System.Collections.Generic;
@@ -22,12 +22,12 @@ namespace Whetstone
     {
         public override LocString DisplayDescription => Localizer.DoStr("Break selected tool immediately");
 
-        public override void OnUsed(Player player, ItemStack itemStack)
+        public override string OnUsed(Player player, ItemStack itemStack)
         {
-            base.OnUsed(player, itemStack);
             var selectedItem = player.User.Inventory.Toolbar.SelectedItem;
-            if (selectedItem is not ToolItem tool) return;
+            if (selectedItem is not ToolItem tool) return "";
             tool.Durability = 0;
+            return base.OnUsed(player, itemStack);
         }
     }
 
@@ -37,25 +37,24 @@ namespace Whetstone
         protected virtual Tag RepairTag => null;
         protected virtual Type RepairItem => null;
 
-        public override void OnUsed(Player player, ItemStack itemStack)
+        public override string OnUsed(Player player, ItemStack itemStack)
         {
-            base.OnUsed(player, itemStack);
             var selectedItem = player.User.Inventory.Toolbar.SelectedItem;
             if (selectedItem == null)
             {
                 player.Error(Localizer.DoStr($"Missing repair target. Please select a tool on the toolbar"));
-                return;
+                return "";
             }
             if (selectedItem is not ToolItem tool || !CanRepair(tool))
             {
                 player.Error(Localizer.DoStr($"{DisplayName} cannot fix {selectedItem.DisplayName}!"));
-                return;
+                return "";
             }
 
             if (!NeedRepair(tool))
             {
                 player.Error(Localizer.DoStr($"{selectedItem.DisplayName} is all good"));
-                return;
+                return "";
             }
 
             itemStack.TryModifyStack(player.User, -1, null, () =>
@@ -63,6 +62,7 @@ namespace Whetstone
                 tool.Durability = 100;
                 player.InfoBox(Localizer.DoStr($"{selectedItem.DisplayName} repaired to full durability!"));
             });
+            return base.OnUsed(player, itemStack);
         }
 
         private bool CanRepair(ToolItem tool)
