@@ -25,7 +25,7 @@ namespace Whetstone
         public override string OnUsed(Player player, ItemStack itemStack)
         {
             var selectedItem = player.User.Inventory.Toolbar.SelectedItem;
-            if (selectedItem is not ToolItem tool) return "";
+            if (selectedItem is not ToolItem tool) return string.Empty;
             tool.Durability = 0;
             return base.OnUsed(player, itemStack);
         }
@@ -43,18 +43,18 @@ namespace Whetstone
             if (selectedItem == null)
             {
                 player.Error(Localizer.DoStr($"Missing repair target. Please select a tool on the toolbar"));
-                return "";
+                return string.Empty;
             }
             if (selectedItem is not ToolItem tool || !CanRepair(tool))
             {
                 player.Error(Localizer.DoStr($"{DisplayName} cannot fix {selectedItem.DisplayName}!"));
-                return "";
+                return string.Empty;
             }
 
             if (!NeedRepair(tool))
             {
                 player.Error(Localizer.DoStr($"{selectedItem.DisplayName} is all good"));
-                return "";
+                return string.Empty;
             }
 
             itemStack.TryModifyStack(player.User, -1, null, () =>
