@@ -45,13 +45,13 @@ namespace Whetstone
                 player.Error(Localizer.DoStr($"Missing repair target. Please select a tool on the toolbar"));
                 return string.Empty;
             }
-            if (selectedItem is not ToolItem tool || !CanRepair(tool))
+            if (selectedItem is not RepairableItem repairable || !CanRepair(repairable))
             {
                 player.Error(Localizer.DoStr($"{DisplayName} cannot fix {selectedItem.DisplayName}!"));
                 return string.Empty;
             }
 
-            if (!NeedRepair(tool))
+            if (!NeedRepair(repairable))
             {
                 player.Error(Localizer.DoStr($"{selectedItem.DisplayName} is all good"));
                 return string.Empty;
@@ -59,30 +59,30 @@ namespace Whetstone
 
             itemStack.TryModifyStack(player.User, -1, null, () =>
             {
-                tool.Durability = 100;
+                repairable.Durability = 100;
                 player.InfoBox(Localizer.DoStr($"{selectedItem.DisplayName} repaired to full durability!"));
             });
             return base.OnUsed(player, itemStack);
         }
 
-        private bool CanRepair(ToolItem tool)
+        private bool CanRepair(RepairableItem tool)
         {
             return CanRepairByItem(tool) || CanRepairByTag(tool);
         }
 
-        private bool CanRepairByItem(ToolItem tool)
+        private bool CanRepairByItem(RepairableItem tool)
         {
             return tool.RepairItem != null && tool.RepairItem.GetType() == RepairItem;
         }
 
-        private bool CanRepairByTag(ToolItem tool)
+        private bool CanRepairByTag(RepairableItem tool)
         {
             return tool.RepairTag != null && tool.RepairTag == RepairTag;
         }
 
         private static bool NeedRepair(DurabilityItem item)
         {
-            return item.Durability < 100;
+            return item.DurabilityRate <= 1.0f;
         }
     }
 
@@ -134,9 +134,9 @@ namespace Whetstone
     [RequiresSkill(typeof(BasicEngineeringSkill), 0)]
     public class WoodWhetstoneRecipe : RecipeFamily
     {
-        public static int InferRepairCostBase(DurabilityItem item)
+        public static int InferRepairCostBase(RepairableItem item)
         {
-            return (int) Math.Ceiling(item.FullRepairAmount * 0.2);
+            return (int)Math.Ceiling(item.FullRepairAmount * 0.2);
         }
         public WoodWhetstoneRecipe()
         {
@@ -146,7 +146,7 @@ namespace Whetstone
                 Localizer.DoStr("Wood Whetstone"),
                 new List<IngredientElement>
                 {
-                    new("Wood", 
+                    new("Wood",
                         InferRepairCostBase(new WoodenShovelItem()),
                         typeof(BasicEngineeringSkill),
                         typeof(BasicEngineeringLavishResourcesTalent)),
@@ -155,11 +155,11 @@ namespace Whetstone
                 {
                     new CraftingElement<WoodWhetstoneItem>(),
                 });
-            Recipes = new List<Recipe> {recipe};
+            Recipes = new List<Recipe> { recipe };
             ExperienceOnCraft = 1;
             LaborInCalories = CreateLaborInCaloriesValue(100);
             CraftMinutes = CreateCraftTimeValue(
-            typeof(WoodWhetstoneItem), 
+            typeof(WoodWhetstoneItem),
             Whetstone.CraftTime,
             typeof(BasicEngineeringSkill),
             typeof(BasicEngineeringFocusedSpeedTalent),
@@ -180,7 +180,7 @@ namespace Whetstone
                 Localizer.DoStr("Stone Whetstone"),
                 new List<IngredientElement>
                 {
-                    new("Rock", 
+                    new("Rock",
                         WoodWhetstoneRecipe.InferRepairCostBase(new StonePickaxeItem()),
                         typeof(BasicEngineeringSkill),
                         typeof(BasicEngineeringLavishResourcesTalent)),
@@ -189,14 +189,14 @@ namespace Whetstone
                 {
                     new CraftingElement<StoneWhetstoneItem>()
                 });
-            Recipes = new List<Recipe> {recipe};
+            Recipes = new List<Recipe> { recipe };
             ExperienceOnCraft = 1;
             LaborInCalories = CreateLaborInCaloriesValue(100);
             CraftMinutes = CreateCraftTimeValue(
-                typeof(StoneWhetstoneRecipe), 
+                typeof(StoneWhetstoneRecipe),
                 Whetstone.CraftTime,
-                typeof(BasicEngineeringSkill), 
-                typeof(BasicEngineeringFocusedSpeedTalent), 
+                typeof(BasicEngineeringSkill),
+                typeof(BasicEngineeringFocusedSpeedTalent),
                 typeof(BasicEngineeringParallelSpeedTalent));
             Initialize(Localizer.DoStr("Stone Whetstone"), typeof(StoneWhetstoneRecipe));
             CraftingComponent.AddRecipe(typeof(ToolBenchObject), this);
@@ -223,7 +223,7 @@ namespace Whetstone
                 {
                     new CraftingElement<IronWhetstoneItem>()
                 });
-            Recipes = new List<Recipe> {recipe};
+            Recipes = new List<Recipe> { recipe };
             ExperienceOnCraft = 1;
             LaborInCalories = CreateLaborInCaloriesValue(100, typeof(SmeltingSkill));
             CraftMinutes = CreateCraftTimeValue(
@@ -248,7 +248,7 @@ namespace Whetstone
                 Localizer.DoStr("Steel Whetstone"),
                 new List<IngredientElement>
                 {
-                    new(typeof(SteelBarItem), 
+                    new(typeof(SteelBarItem),
                         WoodWhetstoneRecipe.InferRepairCostBase(new ModernPickaxeItem()),
                         typeof(AdvancedSmeltingSkill),
                         typeof(AdvancedSmeltingLavishResourcesTalent)),
@@ -257,7 +257,7 @@ namespace Whetstone
                 {
                     new CraftingElement<SteelWhetstoneItem>()
                 });
-            Recipes = new List<Recipe> {recipe};
+            Recipes = new List<Recipe> { recipe };
             ExperienceOnCraft = 1;
             LaborInCalories = CreateLaborInCaloriesValue(200, typeof(AdvancedSmeltingSkill));
             CraftMinutes = CreateCraftTimeValue(
