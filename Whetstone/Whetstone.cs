@@ -82,7 +82,7 @@ namespace Whetstone
 
         private static bool NeedRepair(DurabilityItem item)
         {
-            return item.DurabilityRate <= 1.0f;
+            return item.GetDurability() < DurabilityItem.DurabilityMax;
         }
     }
 
