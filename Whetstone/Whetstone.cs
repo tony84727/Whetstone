@@ -131,6 +131,17 @@ namespace Whetstone
         public override LocString DisplayDescription => Localizer.DoStr("Consume to repair modern/steel tools");
     }
 
+    [Serialized]
+    [LocDisplayName("Tractor Module Repair Kit")]
+    [Weight(500)]
+    [MaxStackSize(50)]
+    [Currency]
+    public class TractorModuleRepairKitItem : Whetstone
+    {
+        protected override Type RepairItem => typeof(IronPlateItem);
+        public override LocString DisplayDescription => Localizer.DoStr("Consume to repair tractor modules");
+    }
+
     [RequiresSkill(typeof(BasicEngineeringSkill), 0)]
     public class WoodWhetstoneRecipe : RecipeFamily
     {
@@ -268,6 +279,40 @@ namespace Whetstone
                 typeof(AdvancedSmeltingParallelSpeedTalent));
             Initialize(Localizer.DoStr("Steel Whetstone"), typeof(SteelWhetstoneRecipe));
             CraftingComponent.AddRecipe(typeof(AnvilObject), this);
+        }
+    }
+
+    [RequiresSkill(typeof(MechanicsSkill), 1)]
+    public class TractorModuleRepairKitRecipe : RecipeFamily
+    {
+        public TractorModuleRepairKitRecipe()
+        {
+            var recipe = new Recipe();
+            recipe.Init(
+                "Tractor Module Repair Kit",
+                Localizer.DoStr("Tractor Module Repair Kit"),
+                new List<IngredientElement>
+                {
+                    new(typeof(IronPlateItem),
+                        WoodWhetstoneRecipe.InferRepairCostBase(new SteamTractorHarvesterItem()),
+                        typeof(MechanicsSkill),
+                        typeof(MechanicsLavishResourcesTalent)),
+                },
+                new List<CraftingElement>
+                {
+                    new CraftingElement<TractorModuleRepairKitItem>()
+                });
+            Recipes = new List<Recipe> { recipe };
+            ExperienceOnCraft = 1;
+            LaborInCalories = CreateLaborInCaloriesValue(200, typeof(MechanicsSkill));
+            CraftMinutes = CreateCraftTimeValue(
+                typeof(TractorModuleRepairKitItem),
+                Whetstone.CraftTime,
+                typeof(MechanicsSkill),
+                typeof(MechanicsFocusedSpeedTalent),
+                typeof(MechanicsParallelSpeedTalent));
+            Initialize(Localizer.DoStr("Tractor Module Repair Kit"), typeof(TractorModuleRepairKitRecipe));
+            CraftingComponent.AddRecipe(typeof(MachinistTableObject), this);
         }
     }
 }
